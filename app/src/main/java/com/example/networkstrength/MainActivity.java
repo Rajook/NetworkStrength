@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
     private Button mBtnCheckNetwork,mBtnPing;
     TelephonyManager mTelephonyManager;
     MyPhoneStateListener mPhoneStatelistener;
-    int mSignalStrength = 0;
     private TextView tvMbps;
 
     @Override
@@ -73,35 +72,34 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 //                boolean isOnline = Utilities.Companion.isNetworkReachAble();
                 boolean isOnline = NetworkUtil.isOnline();
 
-                if (isOnline){
-                    Toast.makeText(getApplicationContext(), NetworkUtil.isConnectedFast(MainActivity.this)+"", Toast.LENGTH_LONG).show();
-                    // DownSpeed in MBPS
-                    double downSpeed = NetworkUtil.NetworkSpeed(MainActivity.this)[0];
-                    // UpSpeed  in MBPS
-                    double upSpeed = NetworkUtil.NetworkSpeed(MainActivity.this)[1];
-
-                    tvMbps.setText("Up Speed:"+ upSpeed+"Mbps and Down Speed:"  +downSpeed+" Mbps");
-                }else {
-                    Toast.makeText(getApplicationContext(), "Not Working", Toast.LENGTH_LONG).show();
-                }
-
                 mPhoneStatelistener = new MyPhoneStateListener(MainActivity.this);
                 mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
+                if (isOnline){
+                    Toast.makeText(getApplicationContext(), "Fast : "+NetworkUtil.isConnectedFast(MainActivity.this)+"", Toast.LENGTH_LONG).show();
+
+                    String strength = NetworkUtil.NetworkSpeed(MainActivity.this);
+
+                    mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+
+                    tvMbps.setText(strength);
+                }else {
+                    if (mTelephonyManager!=null){
+                        mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_NONE);
+                    }
+                    Toast.makeText(getApplicationContext(), "Internet Not Working", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
     private void registerNetworkBroadcast() {
-        IntentFilter filter = new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-        this.registerReceiver(mNetworkReceiver, filter);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mNetworkReceiver);
         mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_NONE);
     }
 
@@ -110,11 +108,8 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 
 //        Toast.makeText(getApplicationContext(), "Signal Strength :"+mSignalStrength, Toast.LENGTH_LONG).show();
 
-        // DownSpeed in MBPS
-        double downSpeed = NetworkUtil.NetworkSpeed(MainActivity.this)[0];
-        // UpSpeed  in MBPS
-        double upSpeed = NetworkUtil.NetworkSpeed(MainActivity.this)[1];
+        String strength = NetworkUtil.NetworkSpeed(MainActivity.this);
 
-        tvMbps.setText("Up Speed:"+ upSpeed+"Mbps and Down Speed:"  +downSpeed+" Mbps");
+        tvMbps.setText(strength);
     }
 }

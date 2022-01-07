@@ -73,7 +73,7 @@ public class NetworkUtil {
         return (info != null && info.isConnected() && isConnectionFast(info.getType(),info.getSubtype(), context));
     }
 
-    public static  double[] NetworkSpeed(Context context){
+    public static  String NetworkSpeed(Context context){
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         // Network Capabilities of Active Network
@@ -94,7 +94,7 @@ public class NetworkUtil {
 //                    Toast.LENGTH_LONG).show();
         }
 
-        return new double[] {downSpeed, upSpeed};
+        return "Up Speed:"+ upSpeed+"Mbps and Down Speed:"  +downSpeed+" Mbps";
 
     }
 
@@ -102,6 +102,12 @@ public class NetworkUtil {
         if(type == ConnectivityManager.TYPE_WIFI){
 
             WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            int wifiLinkSpeed = wifiManager.getConnectionInfo().getLinkSpeed();
+
+                        Toast.makeText(context,
+                    "Wifi LinkSpeed :"+ wifiLinkSpeed,
+                    Toast.LENGTH_LONG).show();
+
             List<ScanResult> scanResult = wifiManager.getScanResults();
             for (int i = 0; i < scanResult.size(); i++) {
                 Log.d("scanResult", "Speed of wifi"+scanResult.get(i).level);//The db level of signal
