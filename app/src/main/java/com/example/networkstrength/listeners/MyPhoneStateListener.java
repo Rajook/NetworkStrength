@@ -1,4 +1,4 @@
-package com.example.networkstrength;
+package com.example.networkstrength.listeners;
 
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;

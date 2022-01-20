@@ -6,8 +6,11 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
@@ -160,5 +163,21 @@ public class NetworkUtil {
             return false;
         }
 
+    }
+
+    public static String getDeviceIMEI(Context context) {
+        String deviceUniqueIdentifier = null;
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                deviceUniqueIdentifier = "SIM 1: "+tm.getImei(0) +"\nSIM 2: "+tm.getImei(1);
+            } else {
+                deviceUniqueIdentifier = "SIM 1: "+tm.getDeviceId(0)+"\nSIM 2: "+tm.getDeviceId(1);
+            }
+        }
+        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+            deviceUniqueIdentifier = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+        return deviceUniqueIdentifier;
     }
 }
