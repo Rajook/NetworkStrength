@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
     MyPhoneStateListener mPhoneStatelistener;
     private TextView tvMbps,mTvImei;
 
-    int theme = 1; // 0 for genixian 1 for daneenian
+    int theme = 0; // 0 for genixian 1 for daneenian
 
     SharedPreferences prefs;
 
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
                 prefs.edit().putInt("theme",0).apply();
                 applyTheme(MainActivity.this,theme);
 //                recreate();
-                Intent intent = new Intent(MainActivity.this, NewActivity.class);
+                Intent intent = new Intent(MainActivity.this, BasicActivity.class);
                 startActivity(intent);
             }
         });
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
                 prefs.edit().putInt("theme",1).apply();
                 applyTheme(MainActivity.this,theme);
 //                recreate();
-                Intent intent = new Intent(MainActivity.this,NewActivity.class);
+                Intent intent = new Intent(MainActivity.this,BasicActivity.class);
                 startActivity(intent);
             }
         });
@@ -184,11 +184,8 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 
     @Override
     public void bandwidth(int mSignalStrength) {
-
 //        Toast.makeText(getApplicationContext(), "Signal Strength :"+mSignalStrength, Toast.LENGTH_LONG).show();
-
         String strength = NetworkUtil.NetworkSpeed(MainActivity.this);
-
         tvMbps.setText(strength);
     }
 
@@ -204,19 +201,6 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 
             default:
                 break;
-        }
-    }
-
-    public void setStatusBarColor(String color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-            int statusBarColor = Color.parseColor(color);
-            if (statusBarColor == Color.BLACK && window.getNavigationBarColor() == Color.BLACK) {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            } else {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            }
-            window.setStatusBarColor(statusBarColor);
         }
     }
 

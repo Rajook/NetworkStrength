@@ -20,6 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NetworkStrength">
         <activity
+            android:name=".views.BasicActivity"
+            android:exported="false"
+            android:label="@string/title_activity_basic"
+            android:theme="@style/Theme.NetworkStrength.NoActionBar" />
+        <activity
             android:name=".views.NewActivity"
             android:exported="false" />
         <activity
