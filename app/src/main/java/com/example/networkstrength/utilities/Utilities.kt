@@ -2,14 +2,19 @@ package com.example.networkstrength.utilities
 
 
 import android.content.Context
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import java.lang.Exception
 
-
 class Utilities {
-
 
     companion object{
         fun isNetworkConnected(activity: Context): Boolean{
@@ -81,6 +86,17 @@ class Utilities {
                 e.printStackTrace()
             }
             return false
+        }
+    }
+
+    fun TextView.setColorOfSubstring(substring: String, color: Int) {
+        try {
+            val spannable = android.text.SpannableString(text)
+            val start = text.indexOf(substring)
+            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, color)), start, start + substring.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            text = spannable
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

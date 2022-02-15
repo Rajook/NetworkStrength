@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.networkstrength.BuildConfig;
+
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +115,9 @@ public class NetworkUtil {
 
             List<ScanResult> scanResult = wifiManager.getScanResults();
             for (int i = 0; i < scanResult.size(); i++) {
-                Log.d("scanResult", "Speed of wifi"+scanResult.get(i).level);//The db level of signal
+                if (BuildConfig.DEBUG) {
+                    Log.d("scanResult", "Speed of wifi"+scanResult.get(i).level);//The db level of signal
+                }
             }
 
             return true;

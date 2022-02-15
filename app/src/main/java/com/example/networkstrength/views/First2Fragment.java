@@ -1,6 +1,8 @@
 package com.example.networkstrength.views;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.example.networkstrength.databinding.FragmentFirst2Binding;
 public class First2Fragment extends Fragment {
 
     private FragmentFirst2Binding binding;
+    int theme = 0; // 0 for genixian 1 for daneenian
 
     @Override
     public View onCreateView(
@@ -29,6 +32,11 @@ public class First2Fragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        theme = prefs.getInt("theme", 0);
+
+
 
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override

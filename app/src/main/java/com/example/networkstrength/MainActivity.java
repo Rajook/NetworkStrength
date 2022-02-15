@@ -1,4 +1,4 @@
-package com.example.networkstrength.views;
+package com.example.networkstrength;
 
 import static com.example.networkstrength.utilities.ViewUtils.applyTheme;
 
@@ -8,68 +8,87 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.networkstrength.databinding.ActivityMainBinding;
 import com.example.networkstrength.listeners.BandwidthListener;
 import com.example.networkstrength.listeners.MyPhoneStateListener;
-import com.example.networkstrength.R;
+import com.example.networkstrength.utilities.DataStoreManager;
 import com.example.networkstrength.utilities.NetworkChangeReceiver;
 import com.example.networkstrength.utilities.NetworkUtil;
+import com.example.networkstrength.utilities.ViewExtensionsKt;
+import com.example.networkstrength.utilities.ViewUtils;
+import com.example.networkstrength.views.BasicActivity;
 
 public class MainActivity extends AppCompatActivity implements BandwidthListener {
 
     private static final int REQUEST_READ_PHONE_STATE = 123;
     private BroadcastReceiver mNetworkReceiver;
-    private Button mBtnCheckNetwork,mBtnPing,mBtbImei,mBtnChangeTheme1,mBtnChangeTheme2;
     TelephonyManager mTelephonyManager;
     MyPhoneStateListener mPhoneStatelistener;
-    private TextView tvMbps,mTvImei;
+
+    private ActivityMainBinding binding;
 
     int theme = 0; // 0 for genixian 1 for daneenian
 
     SharedPreferences prefs;
+    DataStoreManager mDataStoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+
+
+        //Disabling ability to Screenshot
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
+
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         theme = prefs.getInt("theme", 0);
 
         applyTheme(this,theme);
 
-        setContentView(R.layout.activity_main);
+        setContentView(view);
+//        setContentView(R.layout.activity_main);
 
         mNetworkReceiver = new NetworkChangeReceiver();
 
         registerNetworkBroadcast();
 
-        mBtnCheckNetwork = findViewById(R.id.btn_check_network);
-        tvMbps = findViewById(R.id.tv_speed);
-        mBtnPing = findViewById(R.id.btn_ping);
-        mBtbImei = findViewById(R.id.btn_imei);
-        mBtnChangeTheme1 = findViewById(R.id.btn_change_theme1);
-        mBtnChangeTheme2 = findViewById(R.id.btn_change_theme2);
-        mTvImei = findViewById(R.id.tv_imei);
-
         checkPermissions();
 
-        mBtnChangeTheme1.setOnClickListener(new View.OnClickListener() {
+//        ViewExtensionsKt.enable(binding.btnChangeTheme1,false);
+        ViewExtensionsKt.loadButton(binding.btnChangeTheme1,0);
+
+        binding.btnChangeAppIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ViewUtils.changeAppIcon(MainActivity.this);
+            }
+        });
+        binding.btnReturnOld.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ViewUtils.returnOld(MainActivity.this);
+            }
+        });
+
+        binding.btnChangeTheme1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefs.edit().putInt("theme",0).apply();
@@ -80,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
             }
         });
 
-        mBtnChangeTheme2.setOnClickListener(new View.OnClickListener() {
+        binding.btnChangeTheme2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefs.edit().putInt("theme",1).apply();
@@ -91,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
             }
         });
 
-        mBtnCheckNetwork.setOnClickListener(new View.OnClickListener() {
+        binding.btnCheckNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -127,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
             }
         });
         
-        mBtnPing.setOnClickListener(new View.OnClickListener() {
+        binding.btnPing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                boolean isOnline = Utilities.Companion.isNetworkReachAble();
@@ -143,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 
                     mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
-                    tvMbps.setText(strength);
+                    binding.tvSpeed.setText(strength);
                 }else {
                     if (mTelephonyManager!=null){
                         mTelephonyManager.listen(mPhoneStatelistener, PhoneStateListener.LISTEN_NONE);
@@ -153,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
             }
         });
 
-        mBtbImei.setOnClickListener(new View.OnClickListener() {
+        binding.tvImei.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkPermissions();
@@ -167,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
         } else {
-            mTvImei.setText(NetworkUtil.getDeviceIMEI(MainActivity.this));
+//            binding.tvImei.setText(NetworkUtil.getDeviceIMEI(MainActivity.this));
         }
     }
 
@@ -186,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
     public void bandwidth(int mSignalStrength) {
 //        Toast.makeText(getApplicationContext(), "Signal Strength :"+mSignalStrength, Toast.LENGTH_LONG).show();
         String strength = NetworkUtil.NetworkSpeed(MainActivity.this);
-        tvMbps.setText(strength);
+        binding.tvSpeed.setText(strength);
     }
 
     @Override
@@ -207,11 +226,8 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
     @Override
     protected void onResume() {
         super.onResume();
-
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         theme = prefs.getInt("theme", 0);
-
         applyTheme(this,theme);
     }
 }
