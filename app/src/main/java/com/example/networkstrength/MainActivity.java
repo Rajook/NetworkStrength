@@ -1,6 +1,8 @@
 package com.example.networkstrength;
 
 import static com.example.networkstrength.utilities.ViewUtils.applyTheme;
+import static com.example.networkstrength.utilities.ViewUtils.changeAppIcon;
+import static com.example.networkstrength.utilities.ViewUtils.returnOld;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -78,13 +80,13 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
         binding.btnChangeAppIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewUtils.changeAppIcon(MainActivity.this);
+                changeAppIcon(MainActivity.this);
             }
         });
         binding.btnReturnOld.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewUtils.returnOld(MainActivity.this);
+                returnOld(MainActivity.this);
             }
         });
 
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements BandwidthListener
 
 //                boolean isNetworkConnected = Utilities.Companion.isNetworkConnected(getApplicationContext());
 //                int connectedNetwork = Utilities.Companion.getNetworkType(getApplicationContext());
+
                 int connectedNetwork = NetworkUtil.getConnectivityStatus(getApplicationContext());
 
                 if (connectedNetwork != NetworkUtil.TYPE_NOT_CONNECTED){
